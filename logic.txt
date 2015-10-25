@@ -1,0 +1,39 @@
+At a minimum:
+1) Use the wordnik api to pick a random word (play around with the api params to get reasonable words)
+
+
+http://developer.wordnik.com/docs.html#!/words/getRandomWord_get_4
+
+http://api.wordnik.com:80/v4/words.json/randomWord?hasDictionaryDef=true&excludePartOfSpeech=verb-intransitive&minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=4&maxLength=7&api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5
+
+
+http://api.wordnik.com:80/v4/words.json/randomWord?hasDictionaryDef=true&excludePartOfSpeech=abbreviation&minCorpusCount=4&maxCorpusCount=-1&minDictionaryCount=5&maxDictionaryCount=0&minLength=4&maxLength=7&api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5
+
+
+//Scramble it and show the scrambled word to the user
+
+String.prototype.shuffle = function () {
+    var a = this.split(""),
+        n = a.length;
+
+    for(var i = n - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = a[i];
+        a[i] = a[j];
+        a[j] = tmp;
+    }
+    return a.join("");
+}
+
+var word = "hello";
+var wordLength = word.length;
+var scrambled = "";
+
+for (var i = 0; i < wordLength; i++) {
+    var charIndex = Math.floor(Math.random() * word.length);
+    scrambled += word.charAt(charIndex);
+    word = word.substr(0, charIndex) + word.substr(charIndex + 1);
+}
+Take in keyboard input to type out the unscrambled word (you shouldn't have to use the mouse at all)
+Spend some time on the design and usability (CSS transitions are awesome)
+Try to keep the code simple and clean

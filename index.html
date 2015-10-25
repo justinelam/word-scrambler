@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv='Content-type' content='text/html; charset=utf-8'>
+    <title>Word Scramble</title>
+   </head>
+   <style type="text/css">
+   body {
+    background: yellow;
+    font-family: sans-serif;
+   }
+   .wordbox {
+    background-color: #fff;
+    color: blue;
+    margin: 0 auto;
+    width: auto;
+    max-width: 170px;
+    font-size: 34px;
+    font-family: Arial;
+    font-weight: 800;
+   }
+   input {
+    opacity:0;
+    filter:alpha(opacity=0);
+   }
+   h1, p {
+    font-family: Arial, sans-serif;
+   }
+
+   </style>
+  <body>
+    <h1>Word Scramble</h1>
+    <div id="word_scramble">
+    </div><!-- #word_scramble-->
+    <div id="container">
+      <p>
+        To install React, follow the instructions on
+        <a href="https://github.com/facebook/react/">GitHub</a>.
+      </p>
+      <p>
+        If you can see this, React is not working right.
+        If you checked out the source from GitHub make sure to run <code>grunt</code>.
+      </p>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+ 
+
+    <script type="text/jsx">
+
+    var WordPicker = React.createClass({
+      getInitialState: function() {
+        return {
+          word: '',
+          ID: '',
+          scrambledWord: '',
+          charCodedWord: '',
+          wordLength: ''
+        };
+      },
+
+      getWord: function() {
+        $('input#wordInput').focus();
+        $.get(this.props.source, function(result) {
+          var firstWord = result['word'].toLowerCase();
+          var ID = result['id'];
+          var userEntry = [];
+          
+          if (this.isMounted()) {
+            this.setState({
+              word: firstWord,
+              ID: ID,
+              scrambledWord: this.scramble(firstWord).toUpperCase(),
+            });
+          }    
+        }.bind(this));
+      },
+      scramble: function (word) {
+        var a = word.split(""),
+            n = a.length;
+
+        for(var i = n - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var tmp = a[i];
+            a[i] = a[j];
+            a[j] = tmp;
+        }
+        return a.join("");
+      },
+      matchWord: function(e) {
+        var word = this.state.word;
+        length = word.length;
+        console.log(e.target.value);
+        //store keypress values until length = charCodedWord length
+        var userEntry = e.target.value;
+       if (userEntry.length < length) { 
+          $('body').css('background-color', 'yellow');
+        } else if (word == userEntry) {
+          alert('You matched it!');
+           $('body').css('background-color', 'green');
+        } else {
+          $('body').css('background-color', 'red');
+        }
+      },
+      showWord: function() {
+        
+
+      },
+      render: function() {
+        return (
+          <div>
+            <p>Word: {this.state.word} </p>
+            <div className="wordbox" onClick={this.showWord}>{this.state.scrambledWord}</div>
+            <input focus type="text" id="wordInput" onChange={this.matchWord} />
+            <button onClick={this.getWord}>Get New Word</button>
+          </div>
+        );
+      }
+    });
+    
+    React.render(
+      <div>
+      <WordPicker source="http://api.wordnik.com:80/v4/words.json/randomWord?hasDictionaryDef=true&excludePartOfSpeech=abbreviation&minCorpusCount=4&maxCorpusCount=-1&minDictionaryCount=5&maxDictionaryCount=0&minLength=4&maxLength=7&api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5" />
+      <div>
+        
+      </div>
+      </div>,
+      document.getElementById('container')
+    );      
+    </script>
+  </body>
+</html>
